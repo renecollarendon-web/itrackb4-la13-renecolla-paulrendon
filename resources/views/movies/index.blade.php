@@ -4,39 +4,37 @@
 
 @section('content')
 
-    {{-- Active Filters Display --}}
-    @if ($genre_id || $year)
-        <div class="alert alert-info">
-            <strong>Active Filters:</strong>
-            @if ($genre_id) Genre ID: {{ $genre_id }} @endif
-            @if ($year) Year: {{ $year }} @endif
-            <a href="{{ route('movies.index') }}" class="btn btn-sm btn-secondary">Clear All</a>
-        </div>
-    @endif
+    <!-- PART H: Search and Filter Form (Isang form lang) -->
+    <form method="GET" action="{{ route('movies.index') }}" class="mb-4 d-flex gap-2 align-items-center">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search title..." class="form-control w-25">
+        
+        <select name="genre_id" class="form-select w-25">
+            <option value="">All Genres</option>
+            @foreach($genres as $genre)
+                <option value="{{ $genre->id }}" @selected(request('genre_id') == $genre->id)>{{ $genre->name }}</option>
+            @endforeach
+        </select>
 
-    {{-- Filter Links (Gamit ang ID) --}}
+        <select name="is_featured" class="form-select w-25">
+            <option value="">Any Status</option>
+            <option value="1" @selected(request('is_featured') === '1')>Featured</option>
+            <option value="0" @selected(request('is_featured') === '0')>Not Featured</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Apply</button>
+        <a href="{{ route('movies.index') }}" class="btn btn-secondary">Clear</a>
+    </form>
+
+    <!-- Button para mag-add ng movie -->
     <div class="mb-3">
-        <strong>Filter by Genre:</strong>
-        @foreach ($genres as $g)
-            <a href="{{ route('movies.index', ['genre_id' => $g->id, 'year' => $year]) }}">{{ $g->name }}</a>
-        @endforeach
+        <a href="{{ route('movies.create') }}" class="btn btn-success">Add New Movie</a>
     </div>
 
-    <div class="mb-3">
-        <strong>Filter by Year:</strong>
-        <a href="{{ route('movies.index', ['year' => '2016', 'genre_id' => $genre_id]) }}">2016</a>
-        <a href="{{ route('movies.index', ['year' => '2017', 'genre_id' => $genre_id]) }}">2017</a>
-        <a href="{{ route('movies.index', ['year' => '2019', 'genre_id' => $genre_id]) }}">2019</a>
-    </div>
-
-    <a href="{{ route('movies.index') }}" class="btn btn-secondary mb-3">Clear All Filters</a>
-    <a href="{{ route('movies.create') }}" class="btn btn-success mb-3">Add New Movie</a>
-
-    {{-- Movies Table --}}
+    <!-- Movies Table -->
     <table class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>No.</th>
+                <th>#</th>
                 <th>Title</th>
                 <th>Genre</th>
                 <th>Rating</th>
@@ -48,7 +46,7 @@
         <tbody>
             @forelse ($movies as $movie)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                   <td>{{ $movies->firstItem() + $loop->index }}</td>
                     <td>{{ $movie->title }}</td>
                     <td>{{ $movie->genre->name }}</td>
                     <td>
@@ -60,27 +58,29 @@
                     <td>{{ $movie->director }}</td>
                     <td>{{ $movie->year }}</td>
                     <td>
-                        {{-- View Details Link --}}
-                        <a href="{{ route('movies.show', $movie) }}" class="btn btn-sm btn-info text-white">View</a>
+                        <a href="{{ route('movies.show', $movie) }}" class="btn btn-primary btn-sm">View</a>
+                        <a href="{{ route('movies.edit', $movie) }}" class="btn btn-warning btn-sm">Edit</a>
                         
-                        {{-- Edit Link --}}
-                        <a href="{{ route('movies.edit', $movie) }}" class="btn btn-sm btn-primary">Edit</a>
-
-                        {{-- Delete Form (ITO ANG BAGO) --}}
-                        <form action="{{ route('movies.destroy', $movie) }}" method="POST" onsubmit="return confirm('Delete this record?')" class="d-inline">
+                        <form action="{{ route('movies.destroy', $movie) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this movie?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </td>
                 </tr>
             @empty
                 <tr>
                     <td colspan="7" class="text-center">
-                        No movies found. Please add some movies to your collection.
+                        No movies found.
                     </td>
                 </tr>
             @endforelse
         </tbody>
     </table>
+
+    <!-- PART G: Pagination Links -->
+    <div class="mt-4">
+        {{ $movies->links() }}
+    </div>
+
 @endsection

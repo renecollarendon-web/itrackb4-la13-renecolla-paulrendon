@@ -1,7 +1,19 @@
-
-<nav class="nav">
-    <a class="nav-link {{ request()->is('movies*') ? 'active' : '' }}" 
-       href="{{ route('movies.index') }}">All Movies</a>
-    <a class="nav-link {{ request()->is('movies/featured') ? 'active' : '' }}" 
-       href="{{ route('movies.featured') }}">Featured</a>
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ route('home') }}">Anime Collection</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <!-- F5: Ginamit ang movies.* para sumama ang detail page sa highlight -->
+          <a class="nav-link {{ request()->routeIs('movies.*') ? 'active' : '' }}" href="{{ route('movies.index') }}">Movie List</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>

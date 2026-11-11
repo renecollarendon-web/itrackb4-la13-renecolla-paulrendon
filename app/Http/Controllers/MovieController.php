@@ -12,27 +12,44 @@ class MovieController extends Controller
     /**
      * Display a listing of the movies.
      */
-    public function index(Request $request)
+   public function index(Request $request)
 {
-    $genre_id = $request->query('genre_id'); // Gamit na natin ay genre_id
-    $year = $request->query('year');
-   
-   $query = Movie::with('genre');
-
-    if ($genre_id !== null) {
-        $query->where('genre_id', $genre_id); // ✅ ID ang icocompare
-    }
-
-    if ($year !== null) {
-        $query->where('year', $year);
-    }
-
-    $movies = $query->get();
+    $query = Movie::with('genre');
     
-    // Kailangan din ipasa ang genres para sa filter links kung gagamitin mo sila
-    $genres = Genre::all(); 
+    // 1. Search
+    if ($request->filled('search')) {
+        $query->where('title', 'like', '%' . $request->search . '%');
+    }
+    
+    // 2. Genre Filter
+    if ($request->filled('genre_id')) {
+        $query->where('genre_id', $request->genre_id);
+    }
 
-    return view('movies.index', compact('movies', 'genre_id', 'year', 'genres'));
+    // 3. Boolean Filter (Careful sa "0")
+    if ($request->is_featured !== null && $request->is_featured !== '') {
+        $query->where('is_featured', $request->is_featured);
+    }
+
+// Sorting
+$sort = $request->query('sort', 'title');
+$direction = $request->query('direction', 'asc');
+
+// Allowed list (Para hindi mag-error kung may mag-type ng kung ano-ano)
+$allowedSorts = ['title', 'year', 'rating'];
+if (!in_array($sort, $allowedSorts)) {
+    $sort = 'title';
+}
+
+$query->orderBy($sort, $direction);
+
+    // 4. Pagination
+    $movies = $query->paginate(10)->withQueryString(); // withQueryString() ay para sa H9 & H10
+
+    // Kailangan ipasa ang genres para sa dropdown
+    $genres = Genre::all();
+
+    return view('movies.index', compact('movies', 'genres'));
 }
 
     /**

@@ -13,11 +13,13 @@
     }
 </style>
 </head>
-
+        <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 <body>
     <header>
-        <h1>My Anime Movie Collection</h1>
-        <p>Paul Rendon B. Ranecolla | Block 4A</p>
+        
         @include('partials._nav')
     </header>
 

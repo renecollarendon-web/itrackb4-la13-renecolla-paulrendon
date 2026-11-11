@@ -10,65 +10,46 @@ class MovieSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. D1 & D2: Gawa ng lookup rows MUna at i-hold sa variables
-        $romance = Genre::create(['name' => 'Romance']);
-        $drama = Genre::create(['name' => 'Drama']);
-        $fantasy = Genre::create(['name' => 'Fantasy']);
-        $action = Genre::create(['name' => 'Action']);
-
-        // 2. D3: I-assign ang tamang genre_id at tamang rating
-        Movie::create([
-            'title' => 'Your Name',
-            'genre_id' => $romance->id,
-            'rating' => 8.8,
-            'director' => 'Makoto Shinkai',
-            'year' => 2016,
-            'is_featured' => true,
-        ]);
-
-        Movie::create([
-            'title' => 'A Silent Voice',
-            'genre_id' => $drama->id,
-            'rating' => 8.1,
-            'director' => 'Naoko Yamada',
-            'year' => 2016,
-            'is_featured' => false,
-        ]);
-
-        Movie::create([
-            'title' => 'Spirited Away',
-            'genre_id' => $fantasy->id,
-            'rating' => 8.6,
-            'director' => 'Hayao Miyazaki',
-            'year' => 2001,
-            'is_featured' => true,
-        ]);
-
-        Movie::create([
-            'title' => 'I Want To Eat Your Pancreas',
-            'genre_id' => $drama->id,
-            'rating' => 8.1,
-            'director' => 'Shinichiro Ushijima',
-            'year' => 2017,
-            'is_featured' => false,
-        ]);
-
-        Movie::create([
-            'title' => 'Weathering With You',
-            'genre_id' => $romance->id,
-            'rating' => 8.2,
-            'director' => 'Makoto Shinkai',
-            'year' => 2019,
-            'is_featured' => false,
-        ]);
-
-        Movie::create([
-            'title' => 'Princess Mononoke',
-            'genre_id' => $action->id,
-            'rating' => 8.4,
-            'director' => 'Hayao Miyazaki',
-            'year' => 1997,
-            'is_featured' => false,
-        ]);
+        $romance   = Genre::firstOrCreate(['name' => 'Romance']);
+        $drama     = Genre::firstOrCreate(['name' => 'Drama']);
+        $fantasy   = Genre::firstOrCreate(['name' => 'Fantasy']);
+        $action    = Genre::firstOrCreate(['name' => 'Action']);
+        $scifi     = Genre::firstOrCreate(['name' => 'Sci-Fi']);
+        $adventure = Genre::firstOrCreate(['name' => 'Adventure']);
+ 
+        $movies = [
+            ['Your Name', $romance, 8.8, 'Makoto Shinkai', 2016, true],
+            ['A Silent Voice', $drama, 8.1, 'Naoko Yamada', 2016, false],
+            ['Spirited Away', $fantasy, 8.6, 'Hayao Miyazaki', 2001, true],
+            ['I Want To Eat Your Pancreas', $drama, 8.1, 'Shinichiro Ushijima', 2017, false],
+            ['Weathering With You', $romance, 8.2, 'Makoto Shinkai', 2019, false],
+            ['Princess Mononoke', $action, 8.4, 'Hayao Miyazaki', 1997, false],
+            ['Akira', $scifi, 8.0, 'Katsuhiro Otomo', 1988, true],
+            ['Ghost in the Shell', $scifi, 7.9, 'Mamoru Oshii', 1995, false],
+            ['Grave of the Fireflies', $drama, 8.5, 'Isao Takahata', 1988, false],
+            ["Howl's Moving Castle", $fantasy, 8.2, 'Hayao Miyazaki', 2004, true],
+            ['My Neighbor Totoro', $fantasy, 8.1, 'Hayao Miyazaki', 1988, false],
+            ['The Tale of the Princess Kaguya', $fantasy, 8.0, 'Isao Takahata', 2013, false],
+            ['Perfect Blue', $drama, 8.0, 'Satoshi Kon', 1997, false],
+            ['Paprika', $scifi, 7.7, 'Satoshi Kon', 2006, false],
+            ['The Girl Who Leapt Through Time', $scifi, 7.8, 'Mamoru Hosoda', 2006, false],
+            ['Wolf Children', $drama, 8.1, 'Mamoru Hosoda', 2012, false],
+            ['Demon Slayer: Mugen Train', $action, 8.2, 'Haruo Sotozaki', 2020, true],
+            ['Jujutsu Kaisen 0', $action, 7.7, 'Sunghoo Park', 2021, false],
+            ['5 Centimeters per Second', $romance, 7.6, 'Makoto Shinkai', 2007, false],
+            ['Castle in the Sky', $adventure, 8.0, 'Hayao Miyazaki', 1986, false],
+        ];
+ 
+        foreach ($movies as [$title, $genre, $rating, $director, $year, $featured]) {
+            Movie::create([
+                'title'       => $title,
+                'genre_id'    => $genre->id,
+                'rating'      => $rating,
+                'director'    => $director,
+                'year'        => $year,
+                'is_featured' => $featured,
+            ]);
+        }
     }
 }
+
